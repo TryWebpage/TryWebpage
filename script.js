@@ -1,62 +1,87 @@
 $(document).ready(function(){
-    let zoom = 1;
-    let left = 0;
-    let top = 0;
     const moveIncrement = 10;
 
-    // Only zoom when CTRL key is held down
-    $('.img-container').on('wheel', function(e) {
-        e.preventDefault();
+    $('.img-container').each(function() {
+        let zoom = 1;
+        let left = 0;
+        let top = 0;
 
-        // Zoom in/out based on wheel movement
-        zoom += e.originalEvent.deltaY * -0.01;
-        zoom = Math.min(Math.max(.125, zoom), 4);
-        
-        // Apply zoom
-        $('#image1, #image2').css('transform', `scale(${zoom})`);
-    });
+        const hammertime = new Hammer(this);
 
-    $('.images').on('mousemove', function(e) {
-        if (zoom <= 1) return; // No need to move if not zoomed in
+        // Listen to pinch events
+        hammertime.get('pinch').set({ enable: true });
+        hammertime.on('pinchin pinchout', function(e) {
+            // Zoom in/out based on pinch movement
+            if (e.type == 'pinchin') {
+                zoom -= 0.1;
+            } else if (e.type == 'pinchout') {
+                zoom += 0.1;
+            }
 
-        let parentOffset = $(this).offset();
-        let relX = e.pageX - parentOffset.left;
-        let relY = e.pageY - parentOffset.top;
+            zoom = Math.min(Math.max(.125, zoom), 4);
 
-        // Set new position
-        left = (relX / $(this).width()) * 100;
-        top = (relY / $(this).height()) * 100;
+            // Apply zoom
+            $('#image1, #image2').css('transform', `scale(${zoom})`);
+        });
 
-        // Apply position
-        $('#image1, #image2').css('left', -left + '%').css('top', -top + '%');
-    });
+        $(this).on('mousemove', function(e) {
+            if (zoom <= 1) return; // No need to move if not zoomed in
 
-    // Arrow keys to move image
-    $(document).keydown(function(e) {
-        if (zoom <= 1) return; // No need to move if not zoomed in
+            let parentOffset = $(this).offset();
+            let relX = e.pageX - parentOffset.left;
+            let relY = e.pageY - parentOffset.top;
 
-        switch(e.which) {
-            case 37: // left
-                left = Math.min(left + moveIncrement, 100);
-                break;
+            // Set new position
+            left = (relX / $(this).width()) * 100;
+            top = (relY / $(this).height()) * 100;
 
-            case 39: // right
-                left = Math.max(left - moveIncrement, 0);
-                break;
+            // Apply position
+            $('#image1, #image2').css('left', -left + '%').css('top', -top + '%');
+        });
 
-            case 38: // up
-                top = Math.min(top + moveIncrement, 100);
-                break;
+        $(this).on('wheel', function(e) {
+            e.preventDefault();
 
-            case 40: // down
-                top = Math.max(top - moveIncrement, 0);
-                break;
+            // Zoom in/out based on wheel movement
+            zoom += e.originalEvent.deltaY * -0.01;
+            zoom = Math.min(Math.max(.125, zoom), 4);
+            
+            let offsetX = e.originalEvent.pageX - $(this).offset().left;
+            let offsetY = e.originalEvent.pageY - $(this).offset().top;
+            
+            // Set the transform origin so it zooms to where the mouse is
+            $('#image1, #image2').css('transform-origin', offsetX + 'px ' + offsetY + 'px');
+            
+            // Apply zoom
+            $('#image1, #image2').css('transform', `scale(${zoom})`);
+        });
 
-            default: return; // Exit if it's not an arrow key
-        }
-        e.preventDefault(); // Prevent the default action (scroll / move caret)
+        $(document).keydown(function(e) {
+            if (zoom <= 1) return; // No need to move if not zoomed in
 
-        // Apply position
-        $('#image1, #image2').css('left', -left + '%').css('top', -top + '%');
+            switch(e.which) {
+                case 37: // left
+                    left = Math.min(left + moveIncrement, 100);
+                    break;
+
+                case 39: // right
+                    left = Math.max(left - moveIncrement, 0);
+                    break;
+
+                case 38: // up
+                    top = Math.min(top + moveIncrement, 100);
+                    break;
+
+                case 40: // down
+                    top = Math.max(top - moveIncrement, 0);
+                    break;
+
+                default: return; // exit this handler for other keys
+            }
+            e.preventDefault(); // prevent the default action (scroll / move caret)
+
+            // Apply position
+            $('#image1, #image2').css('left', -left + '%').css('top', -top + '%');
+        });
     });
 });
