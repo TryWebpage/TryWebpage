@@ -67,6 +67,15 @@
         });
 
     containreVar.call(zoom);
+
+    containreVar.on("mousemove", function() {
+    var mousePos = d3.mouse(this);
+    var buttonPos = buttonSvg.node().getBoundingClientRect();
+    buttonDiv.style("top", buttonPos.top + "px")
+             .style("left", buttonPos.left + "px")
+             .style("width", buttonPos.width + "px")
+             .style("height", buttonPos.height + "px");
+        });
 </script>
 </body>
 </html>
