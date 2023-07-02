@@ -6,8 +6,6 @@ $(document).ready(function(){
 
     // Only zoom when CTRL key is held down
     $('.img-container').on('wheel', function(e) {
-        if (!e.ctrlKey) return; // Regular scroll if CTRL key is not held down
-
         e.preventDefault();
 
         // Zoom in/out based on wheel movement
