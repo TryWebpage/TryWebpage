@@ -5,6 +5,7 @@ $(document).ready(function(){
   let top = 0;
 
   $('.img-container').on('wheel', function(e) {
+      if (!e.ctrlKey) return; 
       e.preventDefault();
 
       // Zoom in/out based on wheel movement
