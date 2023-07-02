@@ -1,70 +1,64 @@
 $(document).ready(function(){
+    let zoom = 1;
+    let left = 0;
+    let top = 0;
     const moveIncrement = 10;
 
-    $('.img-container').each(function() {
-        let zoom = 1;
-        let left = 0;
-        let top = 0;
+    // Only zoom when CTRL key is held down
+    $('.img-container').on('wheel', function(e) {
+        if (!e.ctrlKey) return; // Regular scroll if CTRL key is not held down
 
-        const hammertime = new Hammer(this);
+        e.preventDefault();
 
-        // Listen to pinch events
-        hammertime.get('pinch').set({ enable: true });
-        hammertime.on('pinchin pinchout', function(e) {
-            // Zoom in/out based on pinch movement
-            if (e.type == 'pinchin') {
-                zoom -= 0.1;
-            } else if (e.type == 'pinchout') {
-                zoom += 0.1;
-            }
+        // Zoom in/out based on wheel movement
+        zoom += e.originalEvent.deltaY * -0.01;
+        zoom = Math.min(Math.max(.125, zoom), 4);
+        
+        // Apply zoom
+        $('#image1, #image2').css('transform', `scale(${zoom})`);
+    });
 
-            zoom = Math.min(Math.max(.125, zoom), 4);
+    $('.images').on('mousemove', function(e) {
+        if (zoom <= 1) return; // No need to move if not zoomed in
 
-            // Apply zoom
-            $('#image1, #image2').css('transform', `scale(${zoom})`);
-        });
+        let parentOffset = $(this).offset();
+        let relX = e.pageX - parentOffset.left;
+        let relY = e.pageY - parentOffset.top;
 
-        $(this).on('mousemove', function(e) {
-            if (zoom <= 1) return; // No need to move if not zoomed in
+        // Set new position
+        left = (relX / $(this).width()) * 100;
+        top = (relY / $(this).height()) * 100;
 
-            let parentOffset = $(this).offset();
-            let relX = e.pageX - parentOffset.left;
-            let relY = e.pageY - parentOffset.top;
+        // Apply position
+        $('#image1, #image2').css('left', -left + '%').css('top', -top + '%');
+    });
 
-            // Set new position
-            left = (relX / $(this).width()) * 100;
-            top = (relY / $(this).height()) * 100;
+    // Arrow keys to move image
+    $(document).keydown(function(e) {
+        if (zoom <= 1) return; // No need to move if not zoomed in
 
-            // Apply position
-            $('#image1, #image2').css('left', -left + '%').css('top', -top + '%');
-        });
+        switch(e.which) {
+            case 37: // left
+                left = Math.min(left + moveIncrement, 100);
+                break;
 
-        $(document).keydown(function(e) {
-            if (zoom <= 1) return; // No need to move if not zoomed in
+            case 39: // right
+                left = Math.max(left - moveIncrement, 0);
+                break;
 
-            switch(e.which) {
-                case 37: // left
-                    left = Math.min(left + moveIncrement, 100);
-                    break;
+            case 38: // up
+                top = Math.min(top + moveIncrement, 100);
+                break;
 
-                case 39: // right
-                    left = Math.max(left - moveIncrement, 0);
-                    break;
+            case 40: // down
+                top = Math.max(top - moveIncrement, 0);
+                break;
 
-                case 38: // up
-                    top = Math.min(top + moveIncrement, 100);
-                    break;
+            default: return; // Exit if it's not an arrow key
+        }
+        e.preventDefault(); // Prevent the default action (scroll / move caret)
 
-                case 40: // down
-                    top = Math.max(top - moveIncrement, 0);
-                    break;
-
-                default: return; // exit this handler for other keys
-            }
-            e.preventDefault(); // prevent the default action (scroll / move caret)
-
-            // Apply position
-            $('#image1, #image2').css('left', -left + '%').css('top', -top + '%');
-        });
+        // Apply position
+        $('#image1, #image2').css('left', -left + '%').css('top', -top + '%');
     });
 });
