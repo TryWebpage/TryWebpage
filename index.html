@@ -3,7 +3,7 @@
 <head>
     <style>
         .container {
-            position: absolute;
+            position: relative;
             width: 90%;
             height: auto;
             margin: auto;
@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-<button class="toggle-button" onclick="toggleOverlay()">Toggle Overlay</button>
+<button class="toggle-button" onclick="toggleOverlay()">تغییر عکس.</button>
 
 <div class="container">
     <svg id="base-svg" class="responsive-svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 11811 7874">
@@ -58,6 +58,17 @@
             overlaySvg.style.display = 'none';
         }
     }
+
+    var zoom = d3.zoom()
+        .scaleExtent([1, 10]) // This defines the minimum and maximum zoom (1x to 10x)
+        .on("zoom", function() {
+            baseSvg.attr("transform", d3.event.transform);
+            overlaySvg.attr("transform", d3.event.transform);
+        });
+
+    // Apply the zoom behavior to your SVGs
+    baseSvg.call(zoom);
+    overlaySvg.call(zoom);
 </script>
 </body>
 </html>
