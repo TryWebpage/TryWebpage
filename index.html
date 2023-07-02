@@ -1,23 +1,42 @@
 <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Your Page</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+    <style>
+        #container {
+            position: relative;
+        }
+
+        #image1, #image2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #hideShowBtn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="images">
-  <div id="container1" class="img-container">
-      <img id="image1" src="IMG_2245.JPG" alt="Image 1">
-  </div>
-  <div id="container2" class="img-container">
-      <img id="image2" src="IMG_2247.JPG" alt="Image 2">
-  </div>
-</div>
+    <div id="container">
+        <img id="image1" src="IMG_2245.JPG" />
+        <img id="image2" src="IMG_2247.JPG" />
+    </div>
+    <button id="hideShowBtn">Hide/Show</button>
 
+    <script>
+        const hideShowBtn = document.querySelector('#hideShowBtn');
+        const image2 = document.querySelector('#image2');
 
-
-    <script src="script.js"></script>
+        hideShowBtn.addEventListener('click', () => {
+            const isImageHidden = image2.style.display === 'none';
+            image2.style.display = isImageHidden ? 'block' : 'none';
+            hideShowBtn.textContent = isImageHidden ? 'Hide' : 'Show';
+        });
+    </script>
 </body>
 </html>
