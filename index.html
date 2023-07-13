@@ -18,16 +18,9 @@
             height: 100%;
         }
 
-        .toggle-button {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 9999; 
-        }
     </style>
 </head>
 <body>
-<button class="toggle-button" onclick="toggleOverlay()">تغییر عکس.</button>
 
 <div id="container" class="container">
     <svg id="base-svg" class="responsive-svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 11811 7874">
@@ -36,46 +29,11 @@
               onclick="alert('متن!'); this.style.fill='rgba(0, 255, 0, 0.2)'">
         </rect>
     </svg>
-
-    <svg id="overlay-svg" class="overlay-svg responsive-svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 11811 7874" style="display: none;">
-        <image href="IMG_2245.JPG" width="11811" height="7874"/>
-    </svg>
 </div>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
-    // Add your SVG content
     var baseSvg = d3.select("#base-svg");
-    var overlaySvg = d3.select("#overlay-svg");
-
-    // Rest of your code...
-
-    function toggleOverlay() {
-        var containreVar = document.getElementById('container');
-        var overlaySvg = document.getElementById('overlay-svg');
-        if (overlaySvg.style.display === 'none') {
-            overlaySvg.style.display = 'block';
-        } else {
-            overlaySvg.style.display = 'none';
-        }
-    }
-
-    var zoom = d3.zoom()
-        .scaleExtent([1, 10]) 
-        .on("zoom", function() {
-            containreVar.attr("transform", d3.event.transform);
-        });
-
-    containreVar.call(zoom);
-
-    containreVar.on("mousemove", function() {
-    var mousePos = d3.mouse(this);
-    var buttonPos = buttonSvg.node().getBoundingClientRect();
-    buttonDiv.style("top", buttonPos.top + "px")
-             .style("left", buttonPos.left + "px")
-             .style("width", buttonPos.width + "px")
-             .style("height", buttonPos.height + "px");
-        });
 </script>
 </body>
 </html>
